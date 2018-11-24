@@ -50,19 +50,76 @@ var model = {
       app.stage.addChild(circle);
       button.push(circle);
     }
+    document.addEventListener('keydown', onKeyDown);
     document.body.appendChild(app.view);
   },
   drawCar: function() {
     app.stage.addChild(car);
   },
   drawRivals: function() {
-    var rival = PIXI.Sprite.fromImage("car.png");
-    rival.x = 60;
-    rival.y = 120;
-    app.stage.addChild(rival);
-    rivals.push(rival);
+    for (var i = 0; i < 5; i++){
+      var rival = PIXI.Sprite.fromImage("car.png");
+      rival.x = Math.floor(Math.random() * 2)*90+60;
+      console.log(rival.x);
+      rival.y = -Math.floor((Math.random() * 5) + 1)*240-120;
+      app.stage.addChild(rival);
+      rivals.push(rival);
+  }
   }
 }
+
+const ticker = new PIXI.ticker.Ticker();
+ticker.stop();
+//deltaTime = 50;
+ticker.add((deltaTime) => {
+  for (var i = 0; i < 5; i++){
+    if(rivals[i].y < 600) {
+    rivals[i].y+=1;
+    
+  }
+    else{
+    rivals[i].y = -Math.floor((Math.random() * 5) + 1)*240-120;
+    rivals[i].x = Math.floor(Math.random() * 2)*90+60;
+    }
+  }
+});
+ticker.start(); 
+
+function onKeyDown(key) {
+  // W Key is 87
+  // Up arrow is 87
+  if (key.keyCode === 87 || key.keyCode === 38) {
+    if (car.y > 0 ){
+      car.y -= 30;
+    }
+  }
+
+  // S Key is 83
+  // Down arrow is 40
+  if (key.keyCode === 83 || key.keyCode === 40) {
+    if ( car.y + car.height < screenHeight){
+      car.y += 30;
+    }
+    
+  }
+
+  // A Key is 65
+  // Left arrow is 37
+  if (key.keyCode === 65 || key.keyCode === 37) {
+    if (car.x > 60){
+      car.x -= 90;
+    }
+  }
+
+  // D Key is 68
+  // Right arrow is 39
+  if (key.keyCode === 68 || key.keyCode === 39) {
+    if (car.x + car.width < screenWidth-60){
+      car.x += 90;
+    }
+  }
+}
+
 
 function onUpClick() {
   if (car.y > 0 ){
@@ -79,15 +136,17 @@ function onDownClick() {
 }
 
 function onLeftClick() {
- if (car.x > 0){
-   car.x -= 30;
+ if (car.x > 60){
+   car.x -= 90;
  }
   
 }
 
 function onRightClick() {
-  if (car.x + car.width < screenWidth)
-  car.x += 30;
+  if (car.x + car.width < screenWidth-60){
+    car.x += 90;
+  }
+  
 }
 
 var view = {
